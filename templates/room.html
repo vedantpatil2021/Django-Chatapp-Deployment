@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block title %}Room ChatApp {% endblock title %}
+{% block body %}
+<!-- ---------------------scripts for Loading and Display The Meassages ------------------- -->
+<script type="text/javascript">
+
+ {% comment %} warnig Javascript swwwt alert to dispaly gelete of msg at end of day {% endcomment %}
+  sweetAlert("Note Please!","<b>Room Meassages Will  <b style='color:red';>Auto-Deleted</b> at end of day!</b>", "info");
+
+    $(document).ready(function () {
+        setInterval(function () {
+            $.ajax({
+                type: 'GET',
+                url: "/get_messages/{{room}}",
+                success: function (response) {
+                    // console.log(response);
+                    $("#display").empty();
+
+                    {% if phone == room_info.phone %}
+
+                    for (var key in response.messages) {
+                        var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" + "<a href='/unblock_user?roomname=" + response.messages[key].roomname + "&phone=" + response.messages[key].phone + "'>Un-Block  </a>" + response.messages[key].date + "<a href='/block_user?roomname=" + response.messages[key].roomname + "&phone=" + response.messages[key].phone + "'>    Block</a>" + "</span></div>";
+                        $("#display").append(temp);
+                    }
+
+                    {% else %}
+                        
+                        for (var key in response.messages) {
+                var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" + response.messages[key].date + "</span></div>";
+                $("#display").append(temp);
+            }
+
+            {% endif %}
+        },
+            error: function (response) {
+                alert("Something Went Wrong..!");
+            }
+                });
+            }, 1500);
+        })
+
+    //  <!-- ----------------scripts for Check Where User Blocked Or Not------------------- -->
+
+
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/isblocked?phone={{phone}}&roomname={{room}}",
+                    success: function (response) {
+                        if(response == "blocked"){
+                            document.getElementById("display").style.display = "none";
+                            document.getElementById("block_user_div").style.display = "block";
+                            document.getElementById("send_msg_div").style.display = "none";
+                        }
+                        else{
+                            document.getElementById("display").style.display = "block";
+                            document.getElementById("block_user_div").style.display = "none";
+                            document.getElementById("send_msg_div").style.display = "block";
+                        }
+            },
+                error: function (response) {
+                    alert('Something Went Wrong...')
+                }
+                    });
+                }, 3000);
+            })
+
+
+    //  <!-- ----------------scripts for Prevent Form From Reloading & Send Message------------------- -->
+
+
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/send',
+            data: {
+                username: $('#username').val(),
+                room_id: $('#room_id').val(),
+                message: $('#message').val(),
+                phone: $('#phone').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {
+            }
+        });
+        document.getElementById('message').value = ''
+    });
+
+</script>
+<!-- ---------------------End Of Script------------------- -->
+
+<style>
+    #head_div {
+        margin-bottom: 0.6rem;
+    }
+
+    #display {
+        height: 71vh;
+        overflow: auto;
+        opacity: 0.95;
+    }
+
+    #dropdown_menu {
+        color: black;
+    }
+    #block_user_div{
+        display : none;
+    }
+</style>
+<div id="head_div" align="center" style="background:rgb(48 246 255 / 78%);">
+    {% if phone == room_info.phone %}
+    <h4><img src="/static/admin.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"><b
+            style='color: rgb(0, 0, 0);background-color: rgb(19, 221, 19);'>( OWNER )</b> Hii <b
+            style='color: red;'>{{room_info.adminname}}</b> ! Welcome To <b style='color: red;'>{{room}}</b> Room</h4>
+    {% else %}
+    <h4><img src="/static/user.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"><b
+            style='color: rgb(0, 0, 0);background-color: rgb(255, 255, 255);'>( USER )</b> Hii <b
+            style='color: red;'>{{username}}</b> ! Welcome To <b style='color: red;'>{{room}}</b> Room</h4>
+    {% endif %}
+    {% if phone == room_info.phone %}
+    <h6>This room is owned by <b style="color:rgb(245, 183, 26)">{{room_info.adminname}} </b>
+
+        <div class="btn-group px-0 py-0">
+            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Menu
+            </button>
+            <ul class="dropdown-menu" id='dropdown_menu'>
+                <li>
+                    <a class="dropdown-item" href="/"><img src="/static/home.jpg" alt="" width="50" height="30"
+                            class="d-inline-block align-text-top"> Home</a>
+                </li>
+                <li>
+
+                    <a class="dropdown-item" href="{% url 'delete_room' room %}"><img src="/static/delete_home.jpg"
+                            alt="" width="50" height="30" class="d-inline-block align-text-top"> Delete Room</a>
+
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/block_user?roomname={{room}}&phone="><img
+                            src="/static/block_user.jpg" alt="" width="50" height="30"
+                            class="d-inline-block align-text-top"> Block User</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/unblock_user?roomname={{room}}&phone="><img
+                            src="/static/unblock_user.jpg" alt="" width="50" height="30"
+                            class="d-inline-block align-text-top"> Un-Block User</a>
+                </li>
+            </ul>
+        </div>
+    </h6>
+
+    {% else %}
+
+    <h6>
+        This room is owned by <b style="color:rgb(245, 183, 26)">{{room_info.adminname}}</b>
+        <div class="btn-group px-0 py-0">
+            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Menu
+            </button>
+            <ul class="dropdown-menu" id='dropdown_menu'>
+                <li><a class="dropdown-item" href="/"><img src="/static/home.jpg" alt="" width="50" height="30"
+                            class="d-inline-block align-text-top"> Home</a></li>
+            </ul>
+        </div>
+    </h6>
+    {% endif %}
+</div>
+
+
+<div id='block_user_div'  align="center" style="background:rgba(255, 255, 255, 0.78);margin-bottom: 0.5rem;margin-top: 0.3rem;">
+    <h1>You Have Been Blocked Bye Room Owner/ Room Admin ----> <b style="color: green;">{{room_info.adminname}}</b></h1>
+</div>
+
+<div id="display">
+
+</div>
+
+
+
+<div class="container" id="send_msg_div">
+    <form id="post-form">
+        {% csrf_token %}
+        {% if phone == room_info.phone %}
+        <input type="hidden" name="username" id="username" value="{{room_info.adminname}}"/>
+        {% else %}
+        <input type="hidden" name="username" id="username" value="{{username}}" />
+        {% endif %}
+        <input type="hidden" name="room_id" id="room_id" value="{{room}}" />
+        <input type="hidden" name="phone" id="phone" value="{{phone}}" />
+        <input type="text" name="message" id="message" width="100px" />
+        <input type="submit" value="Send">
+    </form>
+</div>
+{% endblock body %}

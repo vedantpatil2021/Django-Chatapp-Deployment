@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Home ChatApp {% endblock title %}
+{% block body %} 
+
+<style>
+        #create_room,#head{
+            text-decoration: none;
+            color: black;
+        }
+</style>
+<script type="text/javascript">
+    
+
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/',
+            data: {
+                username: $('#username').val(),
+                room_name: $('#room_name').val(),
+                phone: $('#phone').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {
+                if (data == "blocked"){
+                    sweetAlert("Blocked!", "You are <b style='color:red';>Blocked By Room Owner</b> Contact Room Owner To Unblock..!", "warning");
+                }
+                else if(data == "Room not exists"){
+                    sweetAlert("Error!", "Room <b style='color:red';>Does Not Exists..!</b> Please Create <b style='color:green';>New Room</b>", "error");
+                }
+                else{
+                    window.location = data;
+                }
+            }
+        });
+       
+    });
+
+
+</script>
+
+
+
+<div align="center" style="background:rgb(65 155 60 / 0.89);"   > 
+    <a id='head' href="/"><h2>Welcome To Django Realtime Chating-App </h2></a>
+</div>
+<div class="container">
+    <form id="post-form">
+        {% csrf_token %}
+        <label>Room Name</label>
+        <input type="text" name="room_name" id="room_name" width="100px" required />
+        <label>Username<h6 style="color: red;">  If You are Owner Of Room Your Admin username will Taken</h6></label>
+        <input type="text" name="username" id="username" width="100px" required />
+        <label>Phone</label>
+        <input type="phone" name="phone" id="phone" width="100px" required />
+        <input type="submit" value="Enter Room">
+        <a id='create_room' href="/create_room"><b>Create A Room</b></a>
+    </form>
+</div>
+
+
+{% endblock body %}

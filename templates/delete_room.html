@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Delete Room{% endblock title %}
+{% block body %}
+
+
+
+
+
+<!-- -------------------------------add on style / overiding prevcious css style--------------------------------------- -->
+
+<style>
+
+       #left{
+            color: rgb(0, 177, 0);
+            font-weight: bold;
+        }
+        #right{
+            color: red;
+            font-weight: bold;
+        }
+        #main_div{
+            opacity: 0.89;
+        }
+
+        input[type=submit]:hover{
+        background-color: #45a049;
+        transition: all 0.2s ease-in 0.2s;
+        }
+        input[type=submit]{
+            background-color: rgb(201, 28, 28);
+        }
+
+        #head{
+                color: black;
+        }
+</style>
+
+
+
+
+
+<div align="center" style="background:rgb(244 11 11 / 78%);margin-bottom: 0.5rem;margin-top: 0.3rem;">
+    <h2> Delete Room <a id='head' href='/'><img src="/static/home.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"></a></h2>
+</div>
+
+<div id='deleted_msg_heading'  align="center" style="background:rgba(255, 255, 255, 0.78);margin-bottom: 0.5rem;margin-top: 0.3rem;">
+    <h1> Room Deleted Succesfully Please Go  To home-Page</h1>
+</div>
+
+<div class="row g-0" id="main_div">
+    <div class="col-6 col-md-4" id='left'>Room Name  </div>
+    <div class="col-sm-6 col-md-8" id='right'>{{room_info.roomname}}</div>
+    <div class="col-6 col-md-4" id='left'>Admin Name  </div>
+    <div class="col-sm-6 col-md-8" id='right'>{{room_info.adminname}}</div>
+    <div class="col-6 col-md-4" id='left'>Phone Number (Primary Identity)  </div>
+    <div class="col-sm-6 col-md-8" id='right'>{{room_info.phone}}</div>
+</div>
+
+
+<!-- -------------------------------------------------hidden from form starting from here------------------------------------------ -->
+
+
+<div class="container">
+    <form id="post-form">
+        {% csrf_token %}
+        <input type="hidden" name="phone" id="phone" value="{{room_info.phone}}" />
+        <input type="hidden" name="roomname" id="roomname" value="{{room_info.roomname}}"/>
+        <input id="submit"  type="submit" value="Conform Delete of Room  {{room_info.roomname}}">
+    </form>
+</div>
+
+
+<!-- -------------------------------------------scrpt for deletion of message----------------------------------------------------- -->
+
+<script type="text/javascript">
+
+document.getElementById("deleted_msg_heading").style.display = "none";
+
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/delete_room/{room_info.roomname}',
+                data: {
+                    phone: $('#phone').val(),
+                    roomname: $('#roomname').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {
+
+                    sweetAlert({
+                        title: 'Succesfully Deleted!',
+                        text: "Room Deleted! Succesfully.",
+                        imageUrl: '/static/success.jpg',
+                        imageWidth: 100,
+                        imageHeight: 90,
+                        imageAlt: 'Success',
+                    }) 
+                      
+                    document.getElementById("main_div").style.display = "none";
+                    document.getElementById("submit").style.display = "none";
+                    document.getElementById("deleted_msg_heading").style.display = "block";   
+                },
+                error: function (response) {
+                    sweetAlert("Error!", "Something Went Wrong..", "error");
+                    document.getElementById("main_div").style.display = "none";
+                    document.getElementById("submit").style.display = "none";
+                }
+            });
+        });
+
+</script>
+{% endblock body %}
+
+

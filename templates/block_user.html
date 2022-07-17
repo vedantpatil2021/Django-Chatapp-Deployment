@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Block User {% endblock title %}
+{% block body %}
+
+
+
+<!-- -------------------------------add on style / overiding prevcious css style--------------------------------------- -->
+
+<style>
+
+       #left{
+            color: rgb(0, 177, 0);
+            font-weight: bold;
+        }
+        #right{
+            color: red;
+            font-weight: bold;
+        }
+        #main_div{
+            opacity: 0.89;
+        }
+
+        input[type=submit]:hover{
+        background-color: #45a049;
+        transition: all 0.2s ease-in 0.2s;
+        }
+        input[type=submit]{
+            background-color: rgb(201, 28, 28);
+        }
+
+</style>
+
+
+
+
+
+<div align="center" style="background:rgb(244 11 11 / 78%);margin-bottom: 0.5rem;margin-top: 0.3rem;">
+    <h2> Block User <a id='head' href='/'><img src="/static/home.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"></a></h2>
+</div>
+
+
+<!-- -------------------------------------------------hidden from form starting from here------------------------------------------ -->
+
+
+<div class="container">
+    <form id="post-form">
+        {% csrf_token %}
+        <label style="color: red;">Enter User Phone To Block </label>
+        <input type="text" name="phone" id="phone" value="{{phone}}" required/>
+        <label style="color: red;">Enter User Room name From Which You want to block</label>
+        <input type="text" name="roomname" id="roomname" value="{{roomname}}" required/>
+        <input id="submit"  type="submit" value="Conform The Block user">
+    </form>
+</div>
+
+
+<!-- -------------------------------------------scrpt for deletion of message----------------------------------------------------- -->
+
+<script type="text/javascript">
+
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/block_user',
+                data: {
+                    phone: $('#phone').val(),
+                    roomname: $('#roomname').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {
+                    if (data == "User Blocked Succesfully"){
+                        swal({
+                            title: 'Succesfully Blocked!!',
+                            text: 'User Blocked! Succesfully.',
+                            imageUrl: '/static/success.jpg',
+                            imageWidth: 100,
+                            imageHeight: 90,
+                            imageAlt: 'Success',
+                        }) 
+                    }
+                    else if(data == "User is Alredy Blocked"){
+                        sweetAlert("Blocked!", "<b>User Is Already <b style='color:red';>Blocked</b>..!</b>", "warning");
+                    }
+                    else{
+                        sweetAlert("Error!", "<b style='color:red';>Room Owner</b> Cannot Be Blocked Itself!", "error");
+                    }
+                },
+                error: function (response) {
+                    sweetAlert("Error!", "Something Went Wrong..!", "error");
+                }
+            });
+        });
+
+</script>
+{% endblock body %}
+
+

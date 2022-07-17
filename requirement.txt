@@ -1,0 +1,1 @@
+install shedulars in python for auto deleting of msg
