@@ -5,7 +5,60 @@
 <script type="text/javascript">
 
  {% comment %} warnig Javascript swwwt alert to dispaly gelete of msg at end of day {% endcomment %}
-  sweetAlert("Note Please!","<b>Room Meassages Will  <b style='color:red';>Auto-Deleted</b> at end of day!</b>", "info");
+
+  sweetAlert("Note Please!","<b>Room Meassages Will  <b style='color:red';>Auto-Deleted</b> at end of day!</b>", "info",
+  );
+ 
+// message deleyion code end
+
+  const showLoading = function() {
+    swal({
+      title: 'Auto-Deleting Messages(If any)!! Please Wait',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      timer: 2400,
+      onOpen: () => {
+        swal.showLoading();
+      }
+    }).then(
+      () => {},
+      (dismiss) => {
+        if (dismiss === 'timer') {
+          swal({ 
+            title: 'Finished!',
+            type: 'success',
+            timer: 2620,
+            showConfirmButton: false
+          })
+        }
+      }
+    )
+  };
+   //  <!-- ----------------scripts for Check Where User Message is deleting or not------------------- -->
+
+
+
+ $(document).ready(function () {
+     timer_timr=1000
+    setInterval(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/delete_msg_fun",
+            success: function (response) {
+              if (response == 1){
+                timer_timr = 5000
+                showLoading();
+              }
+              timer_timr = 1000
+            },
+            });
+        }, timer_timr);
+    })
+
+
+
+// message deletion code end here ------>
+
 
     $(document).ready(function () {
         setInterval(function () {
@@ -36,7 +89,7 @@
                 alert("Something Went Wrong..!");
             }
                 });
-            }, 1500);
+            }, 1900);
         })
 
     //  <!-- ----------------scripts for Check Where User Blocked Or Not------------------- -->
@@ -48,7 +101,7 @@
                     type: 'GET',
                     url: "/isblocked?phone={{phone}}&roomname={{room}}",
                     success: function (response) {
-                        if(response == "blocked"){
+                        if(response == "1"){
                             document.getElementById("display").style.display = "none";
                             document.getElementById("block_user_div").style.display = "block";
                             document.getElementById("send_msg_div").style.display = "none";
@@ -65,6 +118,8 @@
                     });
                 }, 3000);
             })
+
+
 
 
     //  <!-- ----------------scripts for Prevent Form From Reloading & Send Message------------------- -->
@@ -141,12 +196,14 @@
                 <li>
                     <a class="dropdown-item" href="/block_user?roomname={{room}}&phone="><img
                             src="/static/block_user.jpg" alt="" width="50" height="30"
-                            class="d-inline-block align-text-top"> Block User</a>
+                            class="d-inline-block align-text-top"> Block User
+                        </a>
                 </li>
                 <li>
                     <a class="dropdown-item" href="/unblock_user?roomname={{room}}&phone="><img
                             src="/static/unblock_user.jpg" alt="" width="50" height="30"
-                            class="d-inline-block align-text-top"> Un-Block User</a>
+                            class="d-inline-block align-text-top"> Un-Block User
+                        </a>
                 </li>
             </ul>
         </div>
@@ -163,7 +220,8 @@
             </button>
             <ul class="dropdown-menu" id='dropdown_menu'>
                 <li><a class="dropdown-item" href="/"><img src="/static/home.jpg" alt="" width="50" height="30"
-                            class="d-inline-block align-text-top"> Home</a></li>
+                            class="d-inline-block align-text-top"> Home</a>
+                </li>
             </ul>
         </div>
     </h6>

@@ -102,7 +102,7 @@ document.getElementById("deleted_msg_heading").style.display = "none";
                     document.getElementById("deleted_msg_heading").style.display = "block";   
                 },
                 error: function (response) {
-                    sweetAlert("Error!", "Something Went Wrong..", "error");
+                    sweetAlert("Error!", "<b>Something Went <b style='color:red';>Wrong..</b></b>(probably Room get deleted)", "error");
                     document.getElementById("main_div").style.display = "none";
                     document.getElementById("submit").style.display = "none";
                 }

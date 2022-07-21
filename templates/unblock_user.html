@@ -68,7 +68,7 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 },
                 success: function (data) {
-                    if (data == "Un-Blocked"){
+                    if (data == "1"){
                         swal({
                             title: 'Un-Blocked!',
                             text: 'Un-Blocked Succesfully !',
@@ -78,7 +78,7 @@
                             imageAlt: 'Success',
                         }) 
                     }
-                    else if(data == "Not Found"){
+                    else if(data == "0"){
                         sweetAlert("Error!", "User <b style='color:red';> not Found</b>", "error");
                     }
                     else{

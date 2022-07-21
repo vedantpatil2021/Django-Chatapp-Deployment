@@ -9,16 +9,23 @@ import re
 from datetime import datetime
 
 
- #<------------Auto delete msg every day-end to check is located in apps.py ------------------->
-         
-#  username and Password for django super user
+# username and Password for django super user
 # Username :- nikhil pass:- nikhil@123
 
 
-
-
+#<------------Auto delete msg every day-end to check is located in apps.py ------------------->
 
 # Create your views here.
+
+#<-****************is Message deleting view function starting here
+#                    it will use for showing a dilog window while msg deleting (moved to '''apps.py''')************>
+
+
+
+
+
+
+
 #<-------------------------------------------------Home View Start Here -------------------------------------------------------->
 def home(request):
     if request.method =="POST":
@@ -29,23 +36,26 @@ def home(request):
         #check if it is exixt in database
         if Room.objects.filter(roomname=room_name).exists():
             if block_unblock().is_bloked(phone,room_name):
-                data = Room.objects.get(roomname=room_name)
-                return HttpResponse("blocked")
+                #returm '0' to indicate the user is blocked
+                return HttpResponse("0")
             else:
                 return HttpResponse('/room/'+room_name+'/'+phone+'?username='+username+'') 
         else:
-            return HttpResponse("Room not exists")
+            #send data as 1 if room mnot found/exists
+            return HttpResponse("1")
     return render(request,'home.html')
 
-#<------------------------------------ Main IS Blocked -------------------------->
+#<------------------------------------ Main IS-Blocked function start here -------------------------->
 
 def isblocked(request):
     roomname = request.GET.get("roomname")
     phone = request.GET.get("phone")    
     if block_unblock().is_bloked(phone,roomname):
-        return HttpResponse('blocked')
+        # return 1 if blocked 
+        return HttpResponse('1')
     else:
-        return HttpResponse('notblocked')
+        # eturn 0 if not blocked
+        return HttpResponse('0')
 
 
 #<----------------------------------------------------Room View Here--------------------------------------------------------------->
@@ -88,8 +98,9 @@ def delete_room(request,room):
         phone = request.POST.get("phone")
         Room.objects.get(roomname=roomname,phone=phone).delete()
         if Message.objects.filter(roomname=roomname).exists():
-            Message.objects.get(roomname=roomname).delete()
-            return HttpResponse('yes')
+            Message.objects.filter(roomname=roomname).delete()
+            #return 1 on succesfull delete
+            return HttpResponse('1')
 
     #If Method Not Post then Show Whole Room Info.
 
@@ -149,18 +160,21 @@ class block_unblock():
         if request.method =='POST':
             self.set_data(request)
             if self.phone == self.temp.phone:
-                return HttpResponse('Room Owner Cannot Be Blocked')
+                #return 1 if Room Owner Cannot Be Blocked
+                return HttpResponse('1')
             temp_lst = list(self.data.split('*'))
             #spilt and check if the no is alredy exist
             if self.phone in temp_lst:
-                return HttpResponse('User is Alredy Blocked')
+                #return 0 if already blocked
+                return HttpResponse('0')
             else:
                 #Add The Phone No in Blocked List
                 new_block_user="*"+self.phone
                 self.data=self.data+new_block_user
                 # save and Return Conformation Data
                 Room.objects.filter(roomname=self.roomname).update(blockuser=self.data)
-                return HttpResponse('User Blocked Succesfully')
+                 #return 2 if if succesfully Blocked
+                return HttpResponse('2')
         
         #If Method Not Post then Show Block user template.
         return render(request,'block_user.html',context = self.get_context(request))
@@ -193,9 +207,11 @@ class block_unblock():
                 Room.objects.filter(roomname=self.roomname).update(blockuser=updated_list)
                 new_data = ''
                 self.data=''
-                return HttpResponse('Un-Blocked')
+                # send '1' on http response on succesful Un-Blocked
+                return HttpResponse('1')
             else:
-                return HttpResponse('Not Found')
+                # send '0' on http response on if user not found
+                return HttpResponse('0')
 
         #If Method Not Post then Show Block user template.
         return render(request,'unblock_user.html',context = self.get_context(request))

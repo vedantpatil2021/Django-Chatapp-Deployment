@@ -9,7 +9,7 @@
         }
 </style>
 <script type="text/javascript">
-    
+
 
     $(document).on('submit', '#post-form', function (e) {
         e.preventDefault();
@@ -23,11 +23,11 @@
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
             },
             success: function (data) {
-                if (data == "blocked"){
-                    sweetAlert("Blocked!", "You are <b style='color:red';>Blocked By Room Owner</b> Contact Room Owner To Unblock..!", "warning");
+                if (data == "0"){
+                    sweetAlert("Blocked!", "<b>You are <b style='color:red';>Blocked By Room Owner</b> Contact Room Owner To Unblock..!</b>", "warning");
                 }
-                else if(data == "Room not exists"){
-                    sweetAlert("Error!", "Room <b style='color:red';>Does Not Exists..!</b> Please Create <b style='color:green';>New Room</b>", "error");
+                else if(data == "1"){
+                    sweetAlert("Error!", "<b>Room <b style='color:red';>Does Not Exists..!</b> Please Create <b style='color:green';>New Room</b>", "error");
                 }
                 else{
                     window.location = data;

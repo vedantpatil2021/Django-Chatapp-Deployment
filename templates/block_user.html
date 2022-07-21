@@ -69,7 +69,7 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 },
                 success: function (data) {
-                    if (data == "User Blocked Succesfully"){
+                    if (data == "2"){
                         swal({
                             title: 'Succesfully Blocked!!',
                             text: 'User Blocked! Succesfully.',
@@ -79,7 +79,7 @@
                             imageAlt: 'Success',
                         }) 
                     }
-                    else if(data == "User is Alredy Blocked"){
+                    else if(data == "0"){
                         sweetAlert("Blocked!", "<b>User Is Already <b style='color:red';>Blocked</b>..!</b>", "warning");
                     }
                     else{
