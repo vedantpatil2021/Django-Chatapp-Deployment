@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path,include
-from chatapp import views,apps
+from chatapp import views
 
 urlpatterns = [
     path('',views.home,name='home'),
@@ -12,5 +12,5 @@ urlpatterns = [
     path('block_user',views.block_unblock().block_user,name='block_user'),
     path('unblock_user',views.block_unblock().unblock_user,name='unblock_user'),
     path('isblocked',views.isblocked,name='isblocked'),
-    path('delete_msg_fun',apps.delete_msg_fun,name='delete_msg_fun'),
+    path('delete_msg_fun',views.delete_msg_fun,name='delete_msg_fun'),
 ]

@@ -1,20 +1,43 @@
 from email.policy import HTTP
-from django import http
 from django.shortcuts import render,redirect
 from django.http import HttpResponse , JsonResponse
 from chatapp.models import Room , Message
 import threading
 import time
 import re
-from datetime import datetime
+import schedule
 
 
 # username and Password for django super user
 # Username :- nikhil pass:- nikhil@123
 
+#<-----------------------------------------is Message deleting view function starting here --------------------------------------->
 
-#<------------Auto delete msg every day-end to check is located in apps.py ------------------->
+delete_msg_status = 0
 
+def delete_msg_fun(request):
+    global delete_msg_status
+    return  HttpResponse(delete_msg_status)
+
+#<-----------------------------it will use for showing a dilog window while msg deleting-------------------------------->
+#<-------------------keep run code infinite to delete msg every day end to check ---------------------------->
+def del_msg():
+    time.sleep(1)
+    global delete_msg_status
+    delete_msg_status = 1
+    time.sleep(1)
+    for p in Room.objects.raw('SELECT *  FROM chatapp_Room'):
+        Message.objects.filter(roomname=p).delete()
+    delete_msg_status = 0
+schedule.every().day.at("12:00").do(del_msg)
+# schedule.every(1).minutes.do(del_msg)
+
+def everday_task():
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+t1 = threading.Thread(target=everday_task)
+t1.start()
 # Create your views here.
 
 #<-****************is Message deleting view function starting here
@@ -39,7 +62,7 @@ def home(request):
                 #returm '0' to indicate the user is blocked
                 return HttpResponse("0")
             else:
-                return HttpResponse('/room/'+room_name+'/'+phone+'?username='+username+'') 
+                return HttpResponse('/room/'+room_name+'/'+phone+'?username='+username+'')
         else:
             #send data as 1 if room mnot found/exists
             return HttpResponse("1")
@@ -49,9 +72,9 @@ def home(request):
 
 def isblocked(request):
     roomname = request.GET.get("roomname")
-    phone = request.GET.get("phone")    
+    phone = request.GET.get("phone")
     if block_unblock().is_bloked(phone,roomname):
-        # return 1 if blocked 
+        # return 1 if blocked
         return HttpResponse('1')
     else:
         # eturn 0 if not blocked
@@ -116,7 +139,7 @@ def delete_room(request,room):
             'room_info':room_info
         }
         return render(request,'delete_room.html',context)
-        
+
 
 #<-----------------------------------------#Class Block And Unblock Start Here function is start here----------------------------------------->
 
@@ -126,15 +149,15 @@ class block_unblock():
         self.phone    = None
         self.temp     = None
         self.data     = None
-        
+
     #<-----------------------------------------#set data  And get_context function is start here----------------------------------------->
-        
+
     def set_data(self,request):
         self.roomname = request.POST.get("roomname")
         self.phone = request.POST.get("phone")
         self.temp = Room.objects.get(roomname=self.roomname)
         self.data  = self.temp.blockuser
-        
+
     def is_bloked(self,phone,room_name):
         data = Room.objects.get(roomname=room_name)
         temp_lst = list(data.blockuser.split('*'))
@@ -142,8 +165,8 @@ class block_unblock():
         if phone in temp_lst:
             return True
         else:
-            return False     
-        
+            return False
+
     def get_context(self,request):
         roomname = request.GET.get('roomname')
         phone = request.GET.get('phone')
@@ -175,22 +198,22 @@ class block_unblock():
                 Room.objects.filter(roomname=self.roomname).update(blockuser=self.data)
                  #return 2 if if succesfully Blocked
                 return HttpResponse('2')
-        
+
         #If Method Not Post then Show Block user template.
         return render(request,'block_user.html',context = self.get_context(request))
-    
-    
+
+
     #<-----------------------------------------#UN-block_user function is start here----------------------------------------->
- 
- 
- 
+
+
+
     def unblock_user(self,request):
         # If Method isfetch data from form
         if request.method =='POST':
             self.set_data(request)
         # <--------------machanism to avoid redundancy of "*" in database ------------->
             counter=0
-            for i in self.data: 
+            for i in self.data:
                 if i == '*':
                     counter=counter+1
                     continue

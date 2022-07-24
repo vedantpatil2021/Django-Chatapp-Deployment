@@ -8,7 +8,7 @@
 
   sweetAlert("Note Please!","<b>Room Meassages Will  <b style='color:red';>Auto-Deleted</b> at end of day!</b>", "info",
   );
- 
+
 // message deleyion code end
 
   const showLoading = function() {
@@ -16,7 +16,7 @@
       title: 'Auto-Deleting Messages(If any)!! Please Wait',
       allowEscapeKey: false,
       allowOutsideClick: false,
-      timer: 2400,
+      timer: 3000,
       onOpen: () => {
         swal.showLoading();
       }
@@ -24,7 +24,7 @@
       () => {},
       (dismiss) => {
         if (dismiss === 'timer') {
-          swal({ 
+          swal({
             title: 'Finished!',
             type: 'success',
             timer: 2620,
@@ -46,7 +46,7 @@
             url: "/delete_msg_fun",
             success: function (response) {
               if (response == 1){
-                timer_timr = 5000
+                timer_timr = 8000
                 showLoading();
               }
               timer_timr = 1000
@@ -77,7 +77,7 @@
                     }
 
                     {% else %}
-                        
+
                         for (var key in response.messages) {
                 var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" + response.messages[key].date + "</span></div>";
                 $("#display").append(temp);
