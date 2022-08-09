@@ -9,7 +9,7 @@ import schedule
 
 
 # username and Password for django super user
-# Username :- nikhil pass:- nikhil@123
+#(Please creatE SuperUser Then Store It here If you Have HABIT Of Forgeting passwords)
 
 #<-----------------------------------------is Message deleting view function starting here --------------------------------------->
 
