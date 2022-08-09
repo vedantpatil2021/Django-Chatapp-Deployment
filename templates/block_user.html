@@ -35,7 +35,7 @@
 
 
 <div align="center" style="background:rgb(244 11 11 / 78%);margin-bottom: 0.5rem;margin-top: 0.3rem;">
-    <h2> Block User <a id='head' href='/'><img src="/static/home.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"></a></h2>
+    <h2> Block User <a id='head' href='/'><img id="home_logo" src="/static/home.jpg" alt="" width="45" height="40" class="d-inline-block align-text-top"></a></h2>
 </div>
 
 
@@ -78,6 +78,7 @@
                             imageHeight: 90,
                             imageAlt: 'Success',
                         }) 
+                        speek_data('User Blocked Succesfully.');
                     }
                     else if(data == "0"){
                         sweetAlert("Blocked!", "<b>User Is Already <b style='color:red';>Blocked</b>..!</b>", "warning");

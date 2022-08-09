@@ -34,7 +34,7 @@
 
 
 <div align="center" style="background:rgb(39 192 17 / 82%);margin-bottom: 0.5rem;margin-top: 0.3rem;">
-    <h2> Un-Block User <a id='head' href='/'><img src="/static/home.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"></a></h2>
+    <h2> Un-Block User <a id='head' href='/'><img id="home_logo" src="/static/home.jpg" alt="" width="45" height="40" class="d-inline-block align-text-top"></a></h2>
 </div>
 
 
@@ -76,7 +76,8 @@
                             imageWidth: 100,
                             imageHeight: 90,
                             imageAlt: 'Success',
-                        }) 
+                        });
+                        speek_data('User Un Blocked Succesfully.');
                     }
                     else if(data == "0"){
                         sweetAlert("Error!", "User <b style='color:red';> not Found</b>", "error");

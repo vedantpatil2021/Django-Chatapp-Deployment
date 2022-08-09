@@ -40,11 +40,13 @@
 
 
 <div align="center" style="background:rgb(244 11 11 / 78%);margin-bottom: 0.5rem;margin-top: 0.3rem;">
-    <h2> Delete Room <a id='head' href='/'><img src="/static/home.jpg" alt="" width="50" height="30" class="d-inline-block align-text-top"></a></h2>
+    <h2> Delete Room <a id='head' href='/'><img id="home_logo" src="/static/home.jpg" alt="" width="45" height="40" class="d-inline-block align-text-top"></a></h2>
 </div>
 
 <div id='deleted_msg_heading'  align="center" style="background:rgba(255, 255, 255, 0.78);margin-bottom: 0.5rem;margin-top: 0.3rem;">
-    <h1> Room Deleted Succesfully Please Go  To home-Page</h1>
+    <h1> Room Deleted Succesfully Please Go  To home-Page</h1><br>
+    <h2  style="color: rgb(20, 183, 9);">Redirecting Home In...</h2>
+    <h2 id="timer" style="color: red;"></h2>
 </div>
 
 <div class="row g-0" id="main_div">
@@ -70,9 +72,27 @@
 </div>
 
 
-<!-- -------------------------------------------scrpt for deletion of message----------------------------------------------------- -->
-
 <script type="text/javascript">
+    var redirect_time = 7;
+    //<-------------------- Timer For Redirecting to home------->
+    function go_home(){
+        my_interval = setInterval(function redirect(){
+            //my_timeout = setTimeout(redirect_time=redirect_time-1,1000);
+            document.getElementById('timer').innerHTML = redirect_time;
+            redirect_time=redirect_time-1;
+            //<-------------If redirect_time is equal Redirecting to home------->
+            if (redirect_time == 0){
+                clearInterval(my_interval);
+                window.location = "/";
+            }
+        },1000)
+    }
+
+
+    
+    
+
+  //  <-------------------------------------------scrpt for deletion of message----------------------------------------------------- -->
 
 document.getElementById("deleted_msg_heading").style.display = "none";
 
@@ -95,11 +115,13 @@ document.getElementById("deleted_msg_heading").style.display = "none";
                         imageWidth: 100,
                         imageHeight: 90,
                         imageAlt: 'Success',
-                    }) 
+                    });
+                    speek_data('Room Deleted Succesfully. Please Go To Home Page');
                       
                     document.getElementById("main_div").style.display = "none";
                     document.getElementById("submit").style.display = "none";
-                    document.getElementById("deleted_msg_heading").style.display = "block";   
+                    document.getElementById("deleted_msg_heading").style.display = "block"; 
+                    window["go_home"]();  
                 },
                 error: function (response) {
                     sweetAlert("Error!", "<b>Something Went <b style='color:red';>Wrong..</b></b>(probably Room get deleted)", "error");

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Find My  Room{% endblock title %}
+{% block body %}
+
+
+
+
+
+<!-- -------------------------------add on style / overiding prevcious css style--------------------------------------- -->
+<style>
+
+       #left{
+            color: rgb(0, 177, 0);
+            font-weight: bold;
+        }
+        #right{
+            color: red;
+            font-weight: bold;
+        }
+        #main_div{
+            opacity: 0.89;
+        }
+
+        input[type=submit]:hover{
+        background-color: #45a049;
+        transition: all 0.2s ease-in 0.2s;
+        }
+        input[type=submit]{
+            background-color: rgb(25, 165, 146);
+        }
+
+        #head{
+                color: black;
+        }
+        #small_logo{
+            border-radius: 21px;
+            margin-left: 1.1rem;
+        }
+
+</style>
+
+<div align="center" style="background-color: rgb(25, 165, 146);margin-bottom: 0.5rem;margin-top: 0.3rem;">
+    <h2>Find My Room  <a id='head' href='/'><img id="home_logo" src="/static/home.jpg" alt="" width="45" height="40" class="d-inline-block align-text-top"></a></h2>
+</div>
+{% if not  sts %}
+<script type="text/javascript">
+    speek_data("Enter valid Phone No To Continue");
+</script>
+{% endif %}
+
+{% if sts == "0" %}
+<script type="text/javascript">
+    speek_data("Looks Like You Don't Own Any Room! Please Create First'");
+    sweetAlert("Not Found!", "<b>Looks Like You <b style='color:red';> Don't Own Any Room</b></b>", "error");
+</script>
+{% else %}
+{% for room in sts %}
+<div class="row g-0" id="main_div">
+    <div class="col-6 col-md-4" id='left'>Room Name<a id='small_logo' href="/room/{{room.roomname }}/{{room.phone}}?username={{room.adminname}}"> <img id="home_logo" src="/static/enter_home.jpg" width="50" height="35" alt="" class="d-inline-block align-text-top"></a></div>
+    <div class="col-sm-6 col-md-8" id='right'>{{room.roomname}}</div>
+    <div class="col-6 col-md-4" id='left'>Admin Name <a id='small_logo'  href="{% url 'delete_room' room.roomname %}">  <img id="home_logo" src="/static/delete_home_logo.jpg" width="45" height="30" alt="" class="d-inline-block align-text-top"></a> </div>
+    <div class="col-sm-6 col-md-8" id='right'>{{room.adminname}}</div>
+    <hr style="color: rgb(148 35 225); height:0.3rem;"> 
+</div>
+{% endfor %} 
+{% endif %}
+
+
+
+<!-- -------------------------------------------------hidden from form starting from here------------------------------------------ -->
+
+
+<div class="container">
+    <form   method="POST" action="/find_room">
+        {% csrf_token %}
+        <input style="font-weight: bold;color: black;  " type="phone" name="phone" id="phone"  placeholder="Enter Phone To Continue"required/>
+        <input id="submit"  type="submit"style="font-weight: bold;color: black;"  value="Find My Room ">
+    </form>
+</div>
+
+{% endblock body %}
+
+

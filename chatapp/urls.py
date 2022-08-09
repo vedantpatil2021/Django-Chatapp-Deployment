@@ -13,4 +13,5 @@ urlpatterns = [
     path('unblock_user',views.block_unblock().unblock_user,name='unblock_user'),
     path('isblocked',views.isblocked,name='isblocked'),
     path('delete_msg_fun',views.delete_msg_fun,name='delete_msg_fun'),
+    path('find_room',views.find_room,name='find_room'),
 ]

@@ -18,11 +18,20 @@
     </script>
 
     {% comment %} <!--- ---------------sweetalert cdn link-------------------------- --> {% endcomment %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.11.0/sweetalert2.css" />
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.11.0/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.11.0/sweetalert2.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.11.0/sweetalert2.all.min.js"></script>
 
-
+    {% comment %} <!--- ------------ common script code like sppek text function which is common to all function  ------------ --> {% endcomment %}
+    <script>
+        //<!-- ------------------- Sppek data Funstion startas here ------------- -->
+            function speek_data(text){
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.5;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+    </script>
 
 
 
@@ -31,7 +40,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            zoom: 80%;
+            zoom: 85%;
             margin: 0 auto;
             max-width: 800px;
             padding: 0 20px;
@@ -118,6 +127,9 @@
             text-decoration: none;
             color: rgb(234, 0, 255);
          }
+         #home_logo{
+            border-radius: 20px;
+        }
 
     </style>
   </head>

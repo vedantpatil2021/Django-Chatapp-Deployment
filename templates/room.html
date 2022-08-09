@@ -39,20 +39,23 @@
 
 
  $(document).ready(function () {
-     timer_timr=1000
+    var timer_time  = 1000
     setInterval(function () {
         $.ajax({
             type: 'GET',
             url: "/delete_msg_fun",
             success: function (response) {
-              if (response == 1){
-                timer_timr = 8000
+                let result = response;
+              if (result == 1){
+                result = 0
+                timer_time = 8000;
                 showLoading();
+                speek_data('Auto Deleting Messages , Please Wait');
+                setInterval(timer_time = 1000 , 8000);
               }
-              timer_timr = 1000
             },
             });
-        }, timer_timr);
+        }, timer_time);
     })
 
 

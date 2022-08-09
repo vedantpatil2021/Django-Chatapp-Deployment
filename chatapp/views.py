@@ -29,8 +29,8 @@ def del_msg():
     for p in Room.objects.raw('SELECT *  FROM chatapp_Room'):
         Message.objects.filter(roomname=p).delete()
     delete_msg_status = 0
-schedule.every().day.at("12:00").do(del_msg)
-# schedule.every(1).minutes.do(del_msg)
+schedule.every().day.at("16:36").do(del_msg)
+#schedule.every(1).minutes.do(del_msg)
 
 def everday_task():
     while True:
@@ -38,16 +38,10 @@ def everday_task():
         time.sleep(60)
 t1 = threading.Thread(target=everday_task)
 t1.start()
+
+
+
 # Create your views here.
-
-#<-****************is Message deleting view function starting here
-#                    it will use for showing a dilog window while msg deleting (moved to '''apps.py''')************>
-
-
-
-
-
-
 
 #<-------------------------------------------------Home View Start Here -------------------------------------------------------->
 def home(request):
@@ -67,6 +61,22 @@ def home(request):
             #send data as 1 if room mnot found/exists
             return HttpResponse("1")
     return render(request,'home.html')
+
+
+#<----------------------------------------Home find my room start here---------------------------------------------------------->
+
+
+def find_room(request):
+    room_lst=[]
+    if request.method =='POST':
+        phone = request.POST.get("phone")
+        if Room.objects.filter(phone=phone).exists():
+            for p in Room.objects.raw('SELECT *  FROM chatapp_Room where phone = '+phone+''):
+                room_lst.append(p)
+            return render(request,'find_room.html',{'sts':room_lst})
+        else:
+            return render(request,'find_room.html',{'sts':"0"})
+    return render(request,'find_room.html')
 
 #<------------------------------------ Main IS-Blocked function start here -------------------------->
 
@@ -257,6 +267,5 @@ def send_msg(request):
 #  <---------------------------------------------Get meassage Using Room Name Start View Here------------------------------------------>
 
 def get_messages(request,room):
-    room_details = Room.objects.get(roomname=room)
     messages = Message.objects.filter(roomname=room)
     return JsonResponse({'messages':list(messages.values())})
